@@ -11,13 +11,19 @@ import {
 import { Button } from '@/app/ui/button';
 import { createInvoice } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
+import { useEffect, useState } from 'react';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
   const initialState = { message: null, errors: {}};
   const [state, dispatch] = useFormState(createInvoice, initialState);
-  
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, [state]);
+
   return (
-    <form action={dispatch}>
+    <form action={dispatch} onSubmit={() => setIsLoading(true)}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
@@ -147,7 +153,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
         >
           Cancel
         </Link>
-        <Button type="submit">Create Invoice</Button>
+        <Button type="submit">{isLoading ? 'Loading...' : 'Create Invoice'}</Button>
       </div>
     </form>
   );
